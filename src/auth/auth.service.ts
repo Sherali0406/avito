@@ -5,11 +5,10 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Request, Response } from 'express'; 
+import { Request, Response } from 'express';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginAuthDto } from './dto/login.auth';
 import { SignupAuthDto } from './dto/signup.auth';
-
 
 @Injectable()
 export class AuthService {
@@ -79,12 +78,18 @@ export class AuthService {
           phone: true,
         },
       });
-      return { ...update, token: tokens.access_token };
+      return {
+        id: update.id,
+        first_name: update.first_name,
+        last_name: update.last_name,
+        phone: update.phone,
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+      };
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
-
 
   async generateToken(id: number) {
     try {
