@@ -45,10 +45,10 @@ model Post {
   user_id         Int
   region_id       Int       @default(0)
   category_id     Int       @default(0)
+
   regions         Region?   @relation(fields: [region_id], references: [id])
   categories      Category? @relation(fields: [category_id], references: [id])
-
-  author User? @relation(fields: [user_id], references: [id])
+  author          User?     @relation(fields: [user_id], references: [id])
 }
 
 model User {

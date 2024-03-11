@@ -24,8 +24,4 @@ export class AuthController {
     return this.authService.signupUser(signupDto);
   }
 
-  @Post('logout')
-  logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    return this.authService.logout(req, res);
-  }
 }

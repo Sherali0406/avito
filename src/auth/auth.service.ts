@@ -85,23 +85,6 @@ export class AuthService {
     }
   }
 
-  async logout(req: any, res: Response) {
-    try {
-      const id = req?.user?.id;
-      const user = await this.prisma.user.findFirst({
-        where: { id },
-      });
-      if (!user) {
-        res.clearCookie('token');
-        throw new UnauthorizedException('invalid token');
-      }
-      res.clearCookie('token');
-      await this.prisma.user.update({ where: { id }, data: { token: '' } });
-      return { message: 'logout success' };
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
 
   async generateToken(id: number) {
     try {

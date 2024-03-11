@@ -11,7 +11,6 @@ export class PostService {
     try {
       return await this.prisma.post.create({ data });
     } catch (error) {
-      // Handle specific error types or log the error
       console.error(`Error creating post: ${error.message}`);
       throw new Error('Unable to create post');
     }
