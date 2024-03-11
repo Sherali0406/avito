@@ -91,4 +91,9 @@ export class PostController {
     const mainPhotoUrl = main_photo.filename;
     return this.postService.uploadMainPhoto(+id, mainPhotoUrl);
   }
+
+  @Patch(':id/add-favorite')
+  async addFavorite(@Param('id') id: string) {
+    return this.postService.addFavorite(+id);
+  }
 }

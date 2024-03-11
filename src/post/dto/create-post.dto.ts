@@ -7,7 +7,7 @@ export class CreatePostDto {
   @ApiProperty({ example: 'well designed' })
   subtitle: string;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: false })
   favorite: boolean;
 
   @ApiProperty({ example: 'battery cycle:90, color:gray' })

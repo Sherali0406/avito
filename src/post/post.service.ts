@@ -62,4 +62,11 @@ export class PostService {
       data: { main_photo: mainPhotoUrl },
     });
   }
+
+  async addFavorite(id: number) {
+    return await this.prisma.post.update({
+      where: { id },
+      data: { favorite: true },
+    });
+  }
 }
