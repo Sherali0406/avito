@@ -17,8 +17,14 @@ export class PostService {
         author: true,
         regions: {
           include: {
-            parent: true, // Include parent region
-            children: true, // Include children regions
+            parent: true,
+            children: true,
+          },
+        },
+        categories: {
+          include: {
+            parent: true,
+            children: true,
           },
         },
       },

@@ -19,6 +19,8 @@ model Category {
   parentId Int?       @default(0)
   parent   Category?  @relation("ChildCategories", fields: [parentId], references: [id])
   children Category[] @relation("ChildCategories")
+
+  post Post[]
 }
 
 model Region {
@@ -32,7 +34,7 @@ model Region {
 }
 
 model Post {
-  id              Int      @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   title           String
   subtitle        String
   favorite        Boolean
@@ -41,9 +43,10 @@ model Post {
   main_photo      String
   photos          String[]
   user_id         Int
-  region_id       Int      @default(0)
-  regions         Region?  @relation(fields: [region_id], references: [id])
-  // children      Region[] @relation("ChildRegions") 
+  region_id       Int       @default(0)
+  category_id     Int       @default(0)
+  regions         Region?   @relation(fields: [region_id], references: [id])
+  categories      Category? @relation(fields: [category_id], references: [id])
 
   author User? @relation(fields: [user_id], references: [id])
 }

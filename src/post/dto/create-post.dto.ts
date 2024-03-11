@@ -27,4 +27,7 @@ export class CreatePostDto {
 
   @ApiProperty({ example: 1 })
   region_id: number;
+
+  @ApiProperty({ example: 1 })
+  category_id: number;
 }
