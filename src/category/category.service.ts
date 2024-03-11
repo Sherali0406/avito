@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Category } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -9,38 +9,63 @@ export class CategoryService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateCategoryDto): Promise<Category> {
-    const { name, parentId } = data;
+    try {
+      const { name, parentId } = data;
 
-    return await this.prisma.category.create({
-      data: {
-        name,
-        parentId: parentId || null, 
-      },
-      include: {
-        parent: true,
-        children: true,
-      },
-    });
+      return await this.prisma.category.create({
+        data: {
+          name,
+          parentId: parentId || null,
+        },
+        include: {
+          parent: true,
+          children: true,
+        },
+      });
+    } catch (error) {
+      console.error(`Error creating category: ${error.message}`);
+      throw new Error('Unable to create category');
+    }
   }
 
   async findAll(): Promise<Category[]> {
-    return await this.prisma.category.findMany({
-      include: { children: true }, 
-    });
+    try {
+      return await this.prisma.category.findMany({
+        include: { children: true },
+      });
+    } catch (error) {
+      console.error(`Error fetching categories: ${error.message}`);
+      throw new Error('Unable to fetch categories');
+    }
   }
 
   async findOne(id: number): Promise<Category> {
-    return await this.prisma.category.findUnique({
-      where: { id },
-      include: { children: true }, 
-    });
+    try {
+      return await this.prisma.category.findUnique({
+        where: { id },
+        include: { children: true },
+      });
+    } catch (error) {
+      console.error(`Error fetching category by id ${id}: ${error.message}`);
+      throw new NotFoundException(`Category with id ${id} not found`);
+    }
   }
 
   async update(id: number, data: UpdateCategoryDto): Promise<Category> {
-    return await this.prisma.category.update({ where: { id }, data });
+    try {
+      return await this.prisma.category.update({ where: { id }, data });
+    } catch (error) {
+      console.error(`Error updating category with id ${id}: ${error.message}`);
+      throw new Error('Unable to update category');
+    }
   }
 
   async remove(id: number): Promise<Category> {
-    return await this.prisma.category.delete({ where: { id } });
+    try {
+      return await this.prisma.category.delete({ where: { id } });
+    } catch (error) {
+      console.error(`Error deleting category with id ${id}: ${error.message}`);
+      throw new Error('Unable to delete category');
+    }
   }
 }

@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
 import {
   BadRequestException,
   Injectable,
@@ -8,11 +5,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Request, Response } from 'express'; // Import Request and Response from 'express'
+import { Request, Response } from 'express'; 
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginAuthDto } from './dto/login.auth';
 import { SignupAuthDto } from './dto/signup.auth';
-const otpGenerator = require('otp-generator');
+
 
 @Injectable()
 export class AuthService {
@@ -32,6 +29,7 @@ export class AuthService {
           'Phone number is already registered by another User',
         );
       }
+
       const hashed_password = await bcrypt.hash(password, 7);
 
       const user = await this.prisma.user.create({
@@ -41,7 +39,7 @@ export class AuthService {
           phone,
           password: hashed_password,
           role: 'USER',
-          address: 'Default Address',
+          address: 'Tashkent shaxar',
         },
         select: {
           id: true,
@@ -82,6 +80,24 @@ export class AuthService {
         },
       });
       return { ...update, token: tokens.access_token };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async logout(req: any, res: Response) {
+    try {
+      const id = req?.user?.id;
+      const user = await this.prisma.user.findFirst({
+        where: { id },
+      });
+      if (!user) {
+        res.clearCookie('token');
+        throw new UnauthorizedException('invalid token');
+      }
+      res.clearCookie('token');
+      await this.prisma.user.update({ where: { id }, data: { token: '' } });
+      return { message: 'logout success' };
     } catch (error) {
       throw new BadRequestException(error.message);
     }

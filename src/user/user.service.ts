@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -7,20 +7,39 @@ import { UpdateUserDto } from './dto/update-user.dto';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
+
   async create(data: CreateUserDto): Promise<User> {
-    return await this.prisma.user.create({ data });
+    try {
+      return await this.prisma.user.create({ data });
+    } catch (error) {
+      console.error(`Error creating user: ${error.message}`);
+      throw new Error('Unable to create user');
+    }
   }
+
   async findAll(): Promise<User[]> {
-    return await this.prisma.user.findMany({ include: { post: true } });
+    try {
+      return await this.prisma.user.findMany({ include: { post: true } });
+    } catch (error) {
+      console.error(`Error fetching users: ${error.message}`);
+      throw new Error('Unable to fetch users');
+    }
   }
 
   async findOne(id: number): Promise<User | null> {
     try {
-      return await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { id },
       });
+
+      if (!user) {
+        throw new NotFoundException(`User with id ${id} not found`);
+      }
+
+      return user;
     } catch (error) {
-      return error;
+      console.error(`Error fetching user by id ${id}: ${error.message}`);
+      throw error;
     }
   }
 
@@ -30,19 +49,32 @@ export class UserService {
         where: { id },
         data,
       });
+
+      if (!user) {
+        throw new NotFoundException(`User with id ${id} not found`);
+      }
+
       return user;
     } catch (error) {
-      return error;
+      console.error(`Error updating user with id ${id}: ${error.message}`);
+      throw error;
     }
   }
 
   async remove(id: number): Promise<User> {
     try {
-      return this.prisma.user.delete({
+      const user = await this.prisma.user.delete({
         where: { id },
       });
+
+      if (!user) {
+        throw new NotFoundException(`User with id ${id} not found`);
+      }
+
+      return user;
     } catch (error) {
-      return error;
+      console.error(`Error deleting user with id ${id}: ${error.message}`);
+      throw error;
     }
   }
 }

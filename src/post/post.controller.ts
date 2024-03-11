@@ -48,6 +48,8 @@ export class PostController {
     return this.postService.remove(+id);
   }
 
+  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////
+
   @Post(':id/upload-photo')
   @UseInterceptors(
     FilesInterceptor('photos', 5, {
@@ -70,6 +72,8 @@ export class PostController {
     return this.postService.uploadPhotos(+id, photoUrls);
   }
 
+  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////  ///////////////
+
   @Post(':id/upload-main-photo')
   @UseInterceptors(
     FileInterceptor('main_photo', {
@@ -78,7 +82,7 @@ export class PostController {
         filename: (req, file, callback) => {
           const uniqueSuffix =
             Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const extension = file.originalname.split('.').pop();
+          const extension = file.originalname.split('.').pop(); //jpg,png
           callback(null, `main_photo-${uniqueSuffix}.${extension}`);
         },
       }),
