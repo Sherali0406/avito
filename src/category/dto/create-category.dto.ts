@@ -5,5 +5,5 @@ export class CreateCategoryDto {
   name: string;
 
   @ApiProperty({ example: 1, required: false })
-  parentId?: number; // Allow parentId to be optional
+  parentId?: number; 
 }

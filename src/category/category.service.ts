@@ -1,5 +1,3 @@
-// src/category/category.service.ts
-
 import { Injectable } from '@nestjs/common';
 import { Category } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
@@ -16,7 +14,7 @@ export class CategoryService {
     return await this.prisma.category.create({
       data: {
         name,
-        parentId: parentId || null, // Set parentId to null if not provided
+        parentId: parentId || null, 
       },
       include: {
         parent: true,
@@ -27,14 +25,14 @@ export class CategoryService {
 
   async findAll(): Promise<Category[]> {
     return await this.prisma.category.findMany({
-      include: { children: true }, // Update to use the correct field name
+      include: { children: true }, 
     });
   }
 
   async findOne(id: number): Promise<Category> {
     return await this.prisma.category.findUnique({
       where: { id },
-      include: { children: true }, // Update to use the correct field name
+      include: { children: true }, 
     });
   }
 

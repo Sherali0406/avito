@@ -12,7 +12,17 @@ export class PostService {
   }
 
   async findAll() {
-    return await this.prisma.post.findMany({ include: { author: true } });
+    return await this.prisma.post.findMany({
+      include: {
+        author: true,
+        regions: {
+          include: {
+            parent: true, // Include parent region
+            children: true, // Include children regions
+          },
+        },
+      },
+    });
   }
 
   async findOne(id: number) {

@@ -16,9 +16,6 @@ export class CreatePostDto {
   @ApiProperty({ example: 'it used only 6 months' })
   description: string;
 
-  @ApiProperty({ example: 'Toshkent Mirabad' })
-  address: string;
-
   @ApiProperty({ example: 'no-main.png' })
   main_photo: string;
 
@@ -27,4 +24,7 @@ export class CreatePostDto {
 
   @ApiProperty({ example: 1 })
   user_id: number;
+
+  @ApiProperty({ example: 1 })
+  region_id: number;
 }
