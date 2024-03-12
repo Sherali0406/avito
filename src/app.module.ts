@@ -8,6 +8,7 @@ import { CategoryModule } from './category/category.module';
 import { PostModule } from './post/post.module';
 import { UserModule } from './user/user.module';
 import { RegionModule } from './region/region.module';
+import { CharacteristicsModule } from './characteristics/characteristics.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { RegionModule } from './region/region.module';
     UserModule,
     AuthModule,
     RegionModule,
+    CharacteristicsModule,
     // AuthModule,
   ],
   controllers: [],

@@ -10,9 +10,6 @@ export class CreatePostDto {
   @ApiProperty({ example: false })
   favorite: boolean;
 
-  @ApiProperty({ example: 'battery cycle:90, color:gray' })
-  characteristics: string;
-
   @ApiProperty({ example: 'it used only 6 months' })
   description: string;
 
@@ -42,6 +39,9 @@ export class CreatePostDto {
 
   @ApiProperty({ example: 1 })
   category_id: number;
+
+  @ApiProperty({ example: 1 })
+  characteristics_id: number;
 
   @ApiProperty({ example: 0 })
   viewsCount: number;

@@ -33,6 +33,7 @@ export class PostService {
               children: true,
             },
           },
+          characteristics: true,
         },
       });
     } catch (error) {

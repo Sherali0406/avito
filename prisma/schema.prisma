@@ -30,30 +30,42 @@ model Region {
 }
 
 model Post {
-  id              Int      @id @default(autoincrement())
-  title           String
-  subtitle        String
-  favorite        Boolean
-  characteristics String
-  description     String
-  main_photo      String
-  photos          String[]
-  address         String
-  price           String
-  rating          Int
-  review          String
-  user_id         Int
-  region_id       Int      @default(0)
-  category_id     Int      @default(0)
-  viewsCount      Int      @default(0)
+  id                 Int      @id @default(autoincrement())
+  title              String
+  subtitle           String
+  favorite           Boolean
+  description        String
+  main_photo         String
+  photos             String[]
+  address            String
+  price              String
+  rating             Int
+  review             String
+  user_id            Int
+  region_id          Int      @default(0)
+  category_id        Int      @default(0)
+  characteristics_id Int
+  viewsCount         Int      @default(0)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  regions    Region?    @relation(fields: [region_id], references: [id])
-  categories Category?  @relation(fields: [category_id], references: [id])
-  author     User?      @relation(fields: [user_id], references: [id])
-  postViews  PostView[]
+  regions         Region?          @relation(fields: [region_id], references: [id])
+  categories      Category?        @relation(fields: [category_id], references: [id])
+  author          User?            @relation(fields: [user_id], references: [id])
+  postViews       PostView[]
+  characteristics Characteristics? @relation(fields: [characteristics_id], references: [id])
+}
+
+model Characteristics {
+  id           Int    @id @default(autoincrement())
+  status       String
+  manufacturer String
+  model        String
+  color        String
+  created_year Int
+
+  posts Post[]
 }
 
 model User {
