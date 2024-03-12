@@ -1,8 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CharacteristicsService } from './characteristics.service';
 import { CreateCharacteristicDto } from './dto/create-characteristic.dto';
 import { UpdateCharacteristicDto } from './dto/update-characteristic.dto';
-import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Characteristics')
 @Controller('characteristics')
@@ -12,30 +20,75 @@ export class CharacteristicsController {
   ) {}
 
   @Post()
-  create(@Body() createCharacteristicDto: CreateCharacteristicDto) {
-    return this.characteristicsService.create(createCharacteristicDto);
+  async create(@Body() createCharacteristicDto: CreateCharacteristicDto) {
+    try {
+      const result = await this.characteristicsService.create(
+        createCharacteristicDto,
+      );
+      return result;
+    } catch (error) {
+      // Handle the error appropriately, for example, log it or send a specific response
+      console.error('Error creating characteristic:', error.message);
+      throw new Error('Failed to create characteristic');
+    }
   }
 
   @Get()
-  findAll() {
-    return this.characteristicsService.findAll();
+  async findAll() {
+    try {
+      const result = await this.characteristicsService.findAll();
+      return result;
+    } catch (error) {
+      console.error('Error fetching characteristics:', error.message);
+      throw new Error('Failed to fetch characteristics');
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.characteristicsService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const result = await this.characteristicsService.findOne(+id);
+      return result;
+    } catch (error) {
+      console.error(
+        `Error fetching characteristic with ID ${id}:`,
+        error.message,
+      );
+      throw new Error(`Failed to fetch characteristic with ID ${id}`);
+    }
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateCharacteristicDto: UpdateCharacteristicDto,
   ) {
-    return this.characteristicsService.update(+id, updateCharacteristicDto);
+    try {
+      const result = await this.characteristicsService.update(
+        +id,
+        updateCharacteristicDto,
+      );
+      return result;
+    } catch (error) {
+      console.error(
+        `Error updating characteristic with ID ${id}:`,
+        error.message,
+      );
+      throw new Error(`Failed to update characteristic with ID ${id}`);
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.characteristicsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    try {
+      const result = await this.characteristicsService.remove(+id);
+      return result;
+    } catch (error) {
+      console.error(
+        `Error deleting characteristic with ID ${id}:`,
+        error.message,
+      );
+      throw new Error(`Failed to delete characteristic with ID ${id}`);
+    }
   }
 }
