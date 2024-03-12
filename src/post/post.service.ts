@@ -115,4 +115,26 @@ export class PostService {
       throw new Error('Unable to add to favorites');
     }
   }
+
+  async recordView(postId: number, userId: number) {
+    const existingView = await this.prisma.postView.findUnique({
+      where: {
+        postId_userId: { postId, userId },
+      },
+    });
+
+    if (!existingView) {
+      await this.prisma.postView.create({
+        data: {
+          postId,
+          userId,
+        },
+      });
+
+      await this.prisma.post.update({
+        where: { id: postId },
+        data: { viewsCount: { increment: 1 } },
+      });
+    }
+  }
 }

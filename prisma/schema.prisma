@@ -1,8 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -20,7 +16,7 @@ model Category {
   parent   Category?  @relation("ChildCategories", fields: [parentId], references: [id])
   children Category[] @relation("ChildCategories")
 
-  post Post[]
+  posts Post[]
 }
 
 model Region {
@@ -30,11 +26,11 @@ model Region {
   parent   Region?  @relation("ChildRegions", fields: [parentId], references: [id])
   children Region[] @relation("ChildRegions")
 
-  post Post[]
+  posts Post[]
 }
 
 model Post {
-  id              Int       @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   title           String
   subtitle        String
   favorite        Boolean
@@ -42,13 +38,22 @@ model Post {
   description     String
   main_photo      String
   photos          String[]
+  address         String
+  price           String
+  rating          Int
+  review          String
   user_id         Int
-  region_id       Int       @default(0)
-  category_id     Int       @default(0)
+  region_id       Int      @default(0)
+  category_id     Int      @default(0)
+  viewsCount      Int      @default(0)
 
-  regions         Region?   @relation(fields: [region_id], references: [id])
-  categories      Category? @relation(fields: [category_id], references: [id])
-  author          User?     @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  regions    Region?    @relation(fields: [region_id], references: [id])
+  categories Category?  @relation(fields: [category_id], references: [id])
+  author     User?      @relation(fields: [user_id], references: [id])
+  postViews  PostView[]
 }
 
 model User {
@@ -63,5 +68,17 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  post Post[]
+  posts Post[]
+
+  postViews PostView[]
+}
+
+model PostView {
+  postId Int
+  userId Int
+  post   Post @relation(fields: [postId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
+
+  @@id([postId, userId])
+  @@index([userId])
 }

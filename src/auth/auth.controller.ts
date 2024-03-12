@@ -23,5 +23,4 @@ export class AuthController {
   signupUser(@Body() signupDto: SignupAuthDto) {
     return this.authService.signupUser(signupDto);
   }
-
 }

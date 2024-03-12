@@ -19,7 +19,7 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     try {
-      return await this.prisma.user.findMany({ include: { post: true } });
+      return await this.prisma.user.findMany({ include: { posts: true } });
     } catch (error) {
       console.error(`Error fetching users: ${error.message}`);
       throw new Error('Unable to fetch users');

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
@@ -28,15 +29,21 @@ export class PostController {
     return this.postService.create(createPostDto);
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string, @Query('userId') userId: string) {
+    await this.postService.recordView(+id, +userId);
+    return this.postService.findOne(+id);
+  }
+
   @Get()
   findAll() {
     return this.postService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.postService.findOne(+id);
+  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {

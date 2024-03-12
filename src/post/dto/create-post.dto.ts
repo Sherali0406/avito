@@ -22,6 +22,18 @@ export class CreatePostDto {
   @ApiProperty({ example: ['no-photos.png'] })
   photos: string[];
 
+  @ApiProperty({ example: '40-uy' })
+  address: string;
+
+  @ApiProperty({ example: '1400 ₽' })
+  price: string;
+
+  @ApiProperty({ example: '5' })
+  rating: number;
+
+  @ApiProperty({ example: 'good thing' })
+  review: string;
+
   @ApiProperty({ example: 1 })
   user_id: number;
 
@@ -30,4 +42,7 @@ export class CreatePostDto {
 
   @ApiProperty({ example: 1 })
   category_id: number;
+
+  @ApiProperty({ example: 0 })
+  viewsCount: number;
 }
