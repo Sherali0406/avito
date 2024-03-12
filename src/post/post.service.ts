@@ -16,7 +16,7 @@ export class PostService {
     }
   }
 
-  async findAll() {
+  async findAllPost() {
     try {
       return await this.prisma.post.findMany({
         include: {
@@ -46,6 +46,12 @@ export class PostService {
     try {
       const whereOptions: any = {};
 
+      if (filterOptions.id) {
+        const postId = parseInt(filterOptions.id, 10);
+        if (!isNaN(postId)) {
+          whereOptions.category_id = postId;
+        }
+      }
       if (filterOptions.category) {
         const categoryId = parseInt(filterOptions.category, 10);
         if (!isNaN(categoryId)) {
@@ -173,7 +179,7 @@ export class PostService {
       throw new Error('Unable to add to favorites');
     }
   }
-  // PostService
+
   async recordView(postId: number, userId: number) {
     try {
       const existingView = await this.prisma.postView.findUnique({

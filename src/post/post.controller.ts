@@ -53,6 +53,11 @@ export class PostController {
     }
   }
 
+  @Get("/getAllPosts")
+  async findAllPost() {
+    return this.postService.findAllPost();
+  }
+
   @Get('/filter')
   @ApiQuery({
     name: 'id',
@@ -60,6 +65,7 @@ export class PostController {
     type: Number,
     description: 'ID of the post',
   })
+
   // @ApiQuery({
   //   name: 'userId',
   //   required: false,
