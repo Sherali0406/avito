@@ -33,7 +33,7 @@ export class PostService {
               children: true,
             },
           },
-          characteristics:true
+          characteristics: true,
         },
       });
     } catch (error) {
@@ -42,9 +42,66 @@ export class PostService {
     }
   }
 
+  async filterPosts(filterOptions: any) {
+    try {
+      const whereOptions: any = {};
+
+      if (filterOptions.category) {
+        const categoryId = parseInt(filterOptions.category, 10);
+        if (!isNaN(categoryId)) {
+          whereOptions.category_id = categoryId;
+        }
+      }
+
+      if (filterOptions.price) {
+        const priceValue = parseInt(filterOptions.price, 10);
+        if (!isNaN(priceValue)) {
+          whereOptions.price = priceValue;
+        }
+      }
+
+      return await this.prisma.post.findMany({
+        where: whereOptions,
+        include: {
+          author: true,
+          regions: {
+            include: {
+              parent: true,
+              children: true,
+            },
+          },
+          categories: {
+            include: {
+              parent: true,
+              children: true,
+            },
+          },
+          characteristics: true,
+        },
+      });
+    } catch (error) {
+      console.error(`Error filtering posts: ${error.message}`);
+      throw new Error('Unable to filter posts');
+    }
+  }
+
   async findOne(id: number) {
     try {
-      return await this.prisma.post.findFirst({ where: { id } });
+      if (isNaN(id) || id <= 0) {
+        throw new Error('Invalid post ID');
+      }
+
+      const existingPost = await this.prisma.post.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!existingPost) {
+        throw new NotFoundException(`Post with id ${id} not found`);
+      }
+
+      return existingPost;
     } catch (error) {
       console.error(`Error fetching post by id ${id}: ${error.message}`);
       throw new NotFoundException(`Post with id ${id} not found`);
@@ -116,26 +173,34 @@ export class PostService {
       throw new Error('Unable to add to favorites');
     }
   }
-
+  // PostService
   async recordView(postId: number, userId: number) {
-    const existingView = await this.prisma.postView.findUnique({
-      where: {
-        postId_userId: { postId, userId },
-      },
-    });
-
-    if (!existingView) {
-      await this.prisma.postView.create({
-        data: {
-          postId,
-          userId,
+    try {
+      const existingView = await this.prisma.postView.findUnique({
+        where: {
+          postId_userId: {
+            postId,
+            userId,
+          },
         },
       });
 
-      await this.prisma.post.update({
-        where: { id: postId },
-        data: { viewsCount: { increment: 1 } },
-      });
+      if (!existingView) {
+        await this.prisma.postView.create({
+          data: {
+            postId,
+            userId,
+          },
+        });
+
+        await this.prisma.post.update({
+          where: { id: postId },
+          data: { viewsCount: { increment: 1 } },
+        });
+      }
+    } catch (error) {
+      console.error(`Error recording view: ${error.message}`);
+      throw new Error('Unable to record view');
     }
   }
 }

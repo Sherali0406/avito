@@ -45,10 +45,9 @@ export class CreatePostDto {
   @IsNotEmpty({ message: 'Address cannot be empty' })
   address: string;
 
-  @ApiProperty({ example: '1400 ₽' })
-  @IsString({ message: 'Price must be a string' })
+  @ApiProperty({ example: '1400' })
   @IsNotEmpty({ message: 'Price cannot be empty' })
-  price: string;
+  price: number;
 
   @ApiProperty({ example: '5' })
   @IsNumber({}, { message: 'Rating must be a number' })
@@ -81,7 +80,5 @@ export class CreatePostDto {
   @IsPositive({ message: 'Characteristics ID must be a positive integer' })
   characteristics_id: number;
 
-  @ApiProperty({ example: 0 })
-  @IsNumber({}, { message: 'Views count must be a number' })
   viewsCount: number;
-}
+} 

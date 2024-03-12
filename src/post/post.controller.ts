@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -13,7 +14,7 @@ import {
 } from '@nestjs/common';
 // import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -29,21 +30,58 @@ export class PostController {
     return this.postService.create(createPostDto);
   }
 
-  @Get(':id')
+  @Get(':id/views')
   async findOne(@Param('id') id: string, @Query('userId') userId: string) {
-    await this.postService.recordView(+id, +userId);
-    return this.postService.findOne(+id);
+    try {
+      const postId = +id;
+
+      if (isNaN(postId) || postId <= 0) {
+        throw new BadRequestException('Invalid post ID');
+      }
+
+      console.log('Valid post ID:', postId);
+
+      await this.postService.recordView(postId, +userId);
+      const postDetails = await this.postService.findOne(postId);
+
+      console.log('Post details:', postDetails);
+
+      return postDetails;
+    } catch (error) {
+      console.error('Error in findOne:', error);
+      throw error;
+    }
   }
 
-  @Get()
-  findAll() {
-    return this.postService.findAll();
+  @Get('/filter')
+  @ApiQuery({
+    name: 'id',
+    required: false,
+    type: Number,
+    description: 'ID of the post',
+  })
+  @ApiQuery({
+    name: 'userId',
+    required: false,
+    type: Number,
+    description: 'ID of the user',
+  })
+  @ApiQuery({
+    name: 'category',
+    required: false,
+    type: Number,
+    description: 'ID of the category',
+  })
+  @ApiQuery({
+    name: 'price',
+    required: false,
+    type: Number,
+    description: 'amoun of price',
+  })
+  @ApiResponse({ status: 200, description: 'Returns filtered posts' })
+  findAll(@Query() filterOptions: any) {
+    return this.postService.filterPosts(filterOptions);
   }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.postService.findOne(+id);
-  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {

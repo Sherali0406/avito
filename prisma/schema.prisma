@@ -38,7 +38,7 @@ model Post {
   main_photo         String
   photos             String[]
   address            String
-  price              String
+  price              Int
   rating             Int
   review             String
   user_id            Int
