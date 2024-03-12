@@ -60,12 +60,12 @@ export class PostController {
     type: Number,
     description: 'ID of the post',
   })
-  @ApiQuery({
-    name: 'userId',
-    required: false,
-    type: Number,
-    description: 'ID of the user',
-  })
+  // @ApiQuery({
+  //   name: 'userId',
+  //   required: false,
+  //   type: Number,
+  //   description: 'ID of the user',
+  // })
   @ApiQuery({
     name: 'category',
     required: false,
