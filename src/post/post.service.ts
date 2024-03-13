@@ -41,6 +41,7 @@ export class PostService {
       throw new Error('Unable to fetch posts');
     }
   }
+  
   async filterPosts(filterOptions: any) {
     try {
       const whereOptions: any = {};

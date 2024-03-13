@@ -117,12 +117,12 @@ export class PostController {
     return this.postService.addFavorite(+id);
   }
 
-  @Get('/filter')
+  @Get('/filterby/price')
   @ApiQuery({
     name: 'category',
     required: false,
-    type: String,
-    description: 'Category of the post',
+    type: Number,
+    description: 'Category id of the post',
   })
   @ApiQuery({
     name: 'minPrice',
