@@ -14,7 +14,7 @@ export class RegionService {
 
       return await this.prisma.region.create({
         data: {
-          address,
+          address, 
           parentId: parentId || null,
         },
         include: {

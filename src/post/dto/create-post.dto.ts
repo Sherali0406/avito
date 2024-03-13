@@ -32,7 +32,6 @@ export class CreatePostDto {
   description: string;
 
   @ApiProperty({ example: 'no-main.png' })
-  @IsString({ message: 'Main photo must be a string' })
   @IsNotEmpty({ message: 'Main photo cannot be empty' })
   main_photo: string;
 

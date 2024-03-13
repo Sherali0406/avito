@@ -10,12 +10,13 @@ export class CategoryService {
 
   async create(data: CreateCategoryDto): Promise<Category> {
     try {
-      const { name, parentId } = data;
+      const { name, parentId, main_photo } = data;
 
       return await this.prisma.category.create({
         data: {
           name,
           parentId: parentId || null,
+          main_photo,
         },
         include: {
           parent: true,
@@ -66,6 +67,19 @@ export class CategoryService {
     } catch (error) {
       console.error(`Error deleting category with id ${id}: ${error.message}`);
       throw new Error('Unable to delete category');
+    }
+  }
+  async uploadMainPhoto(id: number, mainPhotoUrl: string) {
+    try {
+      return await this.prisma.category.update({
+        where: { id },
+        data: { main_photo: mainPhotoUrl },
+      });
+    } catch (error) {
+      console.error(
+        `Error uploading main photo for post with id ${id}: ${error.message}`,
+      );
+      throw new Error('Unable to upload main photo');
     }
   }
 }

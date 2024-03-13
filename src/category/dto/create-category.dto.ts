@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsInt, IsPositive } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class CreateCategoryDto {
   @ApiProperty({ example: 'cars' })
@@ -11,4 +11,8 @@ export class CreateCategoryDto {
   @IsInt({ message: 'Parent ID must be an integer' })
   @IsPositive({ message: 'Parent ID must be a positive integer' })
   parentId?: number;
+
+  @ApiProperty({ example: 'no-main.png' })
+  @IsNotEmpty({ message: 'Main photo cannot be empty' })
+  main_photo: string;
 }

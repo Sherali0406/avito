@@ -39,12 +39,8 @@ export class PostController {
         throw new BadRequestException('Invalid post ID');
       }
 
-      console.log('Valid post ID:', postId);
-
       await this.postService.recordView(postId, +userId);
       const postDetails = await this.postService.findOne(postId);
-
-      console.log('Post details:', postDetails);
 
       return postDetails;
     } catch (error) {
@@ -53,7 +49,7 @@ export class PostController {
     }
   }
 
-  @Get("/getAllPosts")
+  @Get('/getAllPosts')
   async findAllPost() {
     return this.postService.findAllPost();
   }
@@ -65,13 +61,6 @@ export class PostController {
     type: Number,
     description: 'ID of the post',
   })
-
-  // @ApiQuery({
-  //   name: 'userId',
-  //   required: false,
-  //   type: Number,
-  //   description: 'ID of the user',
-  // })
   @ApiQuery({
     name: 'category',
     required: false,
@@ -82,7 +71,7 @@ export class PostController {
     name: 'price',
     required: false,
     type: Number,
-    description: 'amoun of price',
+    description: 'amount of price',
   })
   @ApiResponse({ status: 200, description: 'Returns filtered posts' })
   findAll(@Query() filterOptions: any) {
