@@ -117,7 +117,7 @@ export class PostController {
     return this.postService.addFavorite(+id);
   }
 
-  @Get('/filterby/price')
+  @Get('/filter')
   @ApiQuery({
     name: 'category',
     required: false,
@@ -135,17 +135,28 @@ export class PostController {
     required: false,
     type: Number,
     description: 'Maximum amount of price',
+  }) 
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Keyword to search in posts',
   })
-  @ApiResponse({ status: 200, description: 'Returns filtered posts' })
-  findAllPrice(
-    @Query('category') category: string,
+  @ApiResponse({
+    status: 200,
+    description: 'Returns filtered and/or searched posts',
+  })
+  findAll(
+    @Query('category') category: number,
     @Query('minPrice') minPrice: string,
     @Query('maxPrice') maxPrice: string,
+    @Query('search') search: string,
   ) {
     const filterOptions: any = {};
     if (category) filterOptions.category = category;
     if (minPrice) filterOptions.minPrice = Number(minPrice);
     if (maxPrice) filterOptions.maxPrice = Number(maxPrice);
+    if (search) filterOptions.search = search;
 
     return this.postService.filterPosts(filterOptions);
   }

@@ -41,52 +41,51 @@ export class PostService {
       throw new Error('Unable to fetch posts');
     }
   }
-  
+
   async filterPosts(filterOptions: any) {
-    try {
-      const whereOptions: any = {};
+    const { category, minPrice, maxPrice, search } = filterOptions;
 
-      if (filterOptions.category) {
-        const categoryId = parseInt(filterOptions.category, 10);
-        if (!isNaN(categoryId)) {
-          whereOptions.category_id = categoryId;
-        }
-      }
+    let searchConditions = {};
 
-      if (filterOptions.minPrice && filterOptions.maxPrice) {
-        const minPrice = parseFloat(filterOptions.minPrice);
-        const maxPrice = parseFloat(filterOptions.maxPrice);
-        if (!isNaN(minPrice) && !isNaN(maxPrice)) {
-          whereOptions.price = {
-            gte: minPrice,
-            lte: maxPrice,
-          };
-        }
-      }
-
-      return await this.prisma.post.findMany({
-        where: whereOptions,
-        include: {
-          author: true,
-          regions: {
-            include: {
-              parent: true,
-              children: true,
-            },
-          },
-          categories: {
-            include: {
-              parent: true,
-              children: true,
-            },
-          },
-          characteristics: true,
-        },
-      });
-    } catch (error) {
-      console.error(`Error filtering posts: ${error.message}`);
-      throw new Error('Unable to filter posts');
+    if (search) {
+      searchConditions = {
+        OR: [
+          { title: { contains: search, mode: 'insensitive' } },
+          { description: { contains: search, mode: 'insensitive' } },
+        ],
+      };
     }
+
+    const whereConditions: any = {
+      ...searchConditions,
+      ...(category && { category_id: Number(category) }),
+    };
+
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      whereConditions.price = {};
+
+      if (minPrice !== undefined) {
+        whereConditions.price.gte = parseFloat(minPrice);
+      }
+
+      if (maxPrice !== undefined) {
+        whereConditions.price.lte = parseFloat(maxPrice);
+      }
+    }
+
+    const posts = await this.prisma.post.findMany({
+      where: whereConditions,
+      include: {
+        author: true,
+        categories: true,
+      },
+    });
+
+    if (category && posts.length === 0) {
+      return [];
+    }
+
+    return posts;
   }
 
   async findOne(id: number) {
