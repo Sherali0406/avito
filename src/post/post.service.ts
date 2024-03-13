@@ -41,17 +41,10 @@ export class PostService {
       throw new Error('Unable to fetch posts');
     }
   }
-
   async filterPosts(filterOptions: any) {
     try {
       const whereOptions: any = {};
 
-      if (filterOptions.id) {
-        const postId = parseInt(filterOptions.id, 10);
-        if (!isNaN(postId)) {
-          whereOptions.category_id = postId;
-        }
-      }
       if (filterOptions.category) {
         const categoryId = parseInt(filterOptions.category, 10);
         if (!isNaN(categoryId)) {
@@ -59,10 +52,14 @@ export class PostService {
         }
       }
 
-      if (filterOptions.price) {
-        const priceValue = parseInt(filterOptions.price, 10);
-        if (!isNaN(priceValue)) {
-          whereOptions.price = priceValue;
+      if (filterOptions.minPrice && filterOptions.maxPrice) {
+        const minPrice = parseFloat(filterOptions.minPrice);
+        const maxPrice = parseFloat(filterOptions.maxPrice);
+        if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+          whereOptions.price = {
+            gte: minPrice,
+            lte: maxPrice,
+          };
         }
       }
 

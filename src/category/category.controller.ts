@@ -48,7 +48,7 @@ export class CategoryController {
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);
   }
-  
+
   @Post(':id/upload-main-photo')
   @UseInterceptors(
     FileInterceptor('main_photo', {
@@ -71,4 +71,3 @@ export class CategoryController {
     return this.categoryService.uploadMainPhoto(+id, mainPhotoUrl);
   }
 }
- 

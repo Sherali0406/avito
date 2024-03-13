@@ -69,6 +69,7 @@ export class CategoryService {
       throw new Error('Unable to delete category');
     }
   }
+  
   async uploadMainPhoto(id: number, mainPhotoUrl: string) {
     try {
       return await this.prisma.category.update({

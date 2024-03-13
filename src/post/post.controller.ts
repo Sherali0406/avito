@@ -54,30 +54,6 @@ export class PostController {
     return this.postService.findAllPost();
   }
 
-  @Get('/filter')
-  @ApiQuery({
-    name: 'id',
-    required: false,
-    type: Number,
-    description: 'ID of the post',
-  })
-  @ApiQuery({
-    name: 'category',
-    required: false,
-    type: Number,
-    description: 'ID of the category',
-  })
-  @ApiQuery({
-    name: 'price',
-    required: false,
-    type: Number,
-    description: 'amount of price',
-  })
-  @ApiResponse({ status: 200, description: 'Returns filtered posts' })
-  findAll(@Query() filterOptions: any) {
-    return this.postService.filterPosts(filterOptions);
-  }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
     return this.postService.update(+id, updatePostDto);
@@ -139,5 +115,38 @@ export class PostController {
   @Patch(':id/add-favorite')
   async addFavorite(@Param('id') id: string) {
     return this.postService.addFavorite(+id);
+  }
+
+  @Get('/filter')
+  @ApiQuery({
+    name: 'category',
+    required: false,
+    type: String,
+    description: 'Category of the post',
+  })
+  @ApiQuery({
+    name: 'minPrice',
+    required: false,
+    type: Number,
+    description: 'Minimum amount of price',
+  })
+  @ApiQuery({
+    name: 'maxPrice',
+    required: false,
+    type: Number,
+    description: 'Maximum amount of price',
+  })
+  @ApiResponse({ status: 200, description: 'Returns filtered posts' })
+  findAllPrice(
+    @Query('category') category: string,
+    @Query('minPrice') minPrice: string,
+    @Query('maxPrice') maxPrice: string,
+  ) {
+    const filterOptions: any = {};
+    if (category) filterOptions.category = category;
+    if (minPrice) filterOptions.minPrice = Number(minPrice);
+    if (maxPrice) filterOptions.maxPrice = Number(maxPrice);
+
+    return this.postService.filterPosts(filterOptions);
   }
 }
