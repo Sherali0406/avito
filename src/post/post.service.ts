@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -206,4 +210,47 @@ export class PostService {
       throw new Error('Unable to record view');
     }
   }
+
+
+  async buyProduct(productId: number, quantity: number, userId: number) {
+    try {
+      console.log(
+        `Product ID: ${productId}, Quantity: ${quantity}, User ID: ${userId}`,
+      );
+
+      const product = await this.prisma.post.findUnique({
+        where: { id: productId },
+      });
+
+      if (!product) {
+        throw new NotFoundException(`Product not found: ID ${productId}`);
+      }
+
+      console.log('Product found:', product);
+
+      if (product.totalQuantity < quantity) {
+        throw new BadRequestException(
+          `Insufficient quantity available for purchase`,
+        );
+      } 
+
+      console.log('Sufficient quantity available');
+
+      const updatedProduct = await this.prisma.post.update({
+        where: { id: productId },
+        data: {
+          totalQuantity: { decrement: quantity },
+          soldQuantity: { increment: quantity },
+        },
+      });
+
+      console.log('Product updated:', updatedProduct);
+
+      return updatedProduct;
+    } catch (error) {
+      console.error(`Error purchasing product: ${error.message}`);
+      throw new Error('Unable to purchase product');
+    }
+  }
+
 }

@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -14,7 +15,13 @@ import {
 } from '@nestjs/common';
 // import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -135,7 +142,7 @@ export class PostController {
     required: false,
     type: Number,
     description: 'Maximum amount of price',
-  }) 
+  })
   @ApiQuery({
     name: 'search',
     required: false,
@@ -160,4 +167,47 @@ export class PostController {
 
     return this.postService.filterPosts(filterOptions);
   }
+
+  @Post(':id/buy')
+  @ApiParam({ name: 'id', description: 'ID of the post to purchase' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        quantity: {
+          type: 'number',
+          description: 'Quantity of the product to purchase',
+        },
+        userId: {
+          type: 'number',
+          description: 'ID of the user making the purchase',
+        },
+      },
+      required: ['quantity', 'userId'],
+    },
+  })
+  @ApiResponse({ status: 200, description: 'Product purchased successfully' })
+  async buyProduct(
+    @Param('id') productId: string,
+    @Body('quantity') quantity: number,
+    @Body('userId') userId: number,
+  ) {
+    try {
+      const product = await this.postService.buyProduct(
+        +productId,
+        quantity,
+        userId,
+      );
+
+      if (!product) {
+        throw new NotFoundException(`Product not found with ID ${productId}`);
+      }
+
+      return { success: true, message: 'Product purchased successfully' };
+    } catch (error) {
+      console.error(`Error purchasing product: ${error.message}`);
+      throw new Error('Unable to purchase product');
+    }
+  }
+
 }

@@ -8,7 +8,7 @@ const start = async () => {
   try {
     const config = new DocumentBuilder()
       .addBearerAuth()
-      .setTitle('task 2')
+      .setTitle('task 2 (avito)')
       .setDescription(' Task 2!')
       .setVersion('1.0.0')
       .addTag('NodeJs')

@@ -55,7 +55,7 @@ export class CreatePostDto {
   @Max(5, { message: 'Rating must be at most 5' })
   rating: number;
 
-  @ApiProperty({ example: 'good thing' })
+  @ApiProperty({ example: 'good product' })
   @IsString({ message: 'Review must be a string' })
   review: string;
 
@@ -80,4 +80,10 @@ export class CreatePostDto {
   characteristics_id: number;
 
   viewsCount: number;
-} 
+
+  @ApiProperty({ example: 100 })
+  @IsInt({ message: 'total quantity must be an integer' })
+  totalQuantity: number;
+
+  soldQuantity: number;
+}

@@ -45,12 +45,16 @@ model Post {
   viewsCount         Int             @default(0)
   characteristics_id Int
   price              Int
+  totalQuantity      Int
+  soldQuantity       Int?            @default(0)
+  
   categories         Category        @relation(fields: [category_id], references: [id])
   characteristics    Characteristics @relation(fields: [characteristics_id], references: [id])
   regions            Region          @relation(fields: [region_id], references: [id])
   author             User            @relation(fields: [user_id], references: [id])
   postViews          PostView[]
 }
+
 
 model Characteristics {
   id           Int    @id @default(autoincrement())
