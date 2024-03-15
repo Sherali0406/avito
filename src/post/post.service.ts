@@ -211,7 +211,6 @@ export class PostService {
     }
   }
 
-
   async buyProduct(productId: number, quantity: number, userId: number) {
     try {
       console.log(
@@ -232,7 +231,7 @@ export class PostService {
         throw new BadRequestException(
           `Insufficient quantity available for purchase`,
         );
-      } 
+      }
 
       console.log('Sufficient quantity available');
 
@@ -252,5 +251,4 @@ export class PostService {
       throw new Error('Unable to purchase product');
     }
   }
-
 }

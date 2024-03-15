@@ -209,5 +209,4 @@ export class PostController {
       throw new Error('Unable to purchase product');
     }
   }
-
 }
