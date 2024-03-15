@@ -56,7 +56,7 @@ export class PostController {
     }
   }
 
-  @Get('/getAllPosts')
+  @Get('')
   async findAllPost() {
     return this.postService.findAllPost();
   }
