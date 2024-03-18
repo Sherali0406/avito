@@ -211,12 +211,8 @@ export class PostService {
     }
   }
 
-  async buyProduct(productId: number, quantity: number, userId: number) {
+  async buyProduct(productId: number, quantity: number, user_id: number) {
     try {
-      console.log(
-        `Product ID: ${productId}, Quantity: ${quantity}, User ID: ${userId}`,
-      );
-
       const product = await this.prisma.post.findUnique({
         where: { id: productId },
       });
@@ -225,15 +221,11 @@ export class PostService {
         throw new NotFoundException(`Product not found: ID ${productId}`);
       }
 
-      console.log('Product found:', product);
-
       if (product.totalQuantity < quantity) {
         throw new BadRequestException(
           `Insufficient quantity available for purchase`,
         );
       }
-
-      console.log('Sufficient quantity available');
 
       const updatedProduct = await this.prisma.post.update({
         where: { id: productId },
@@ -242,8 +234,6 @@ export class PostService {
           soldQuantity: { increment: quantity },
         },
       });
-
-      console.log('Product updated:', updatedProduct);
 
       return updatedProduct;
     } catch (error) {

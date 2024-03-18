@@ -178,25 +178,29 @@ export class PostController {
           type: 'number',
           description: 'Quantity of the product to purchase',
         },
-        userId: {
+        user_id: {
           type: 'number',
           description: 'ID of the user making the purchase',
         },
       },
-      required: ['quantity', 'userId'],
+      required: ['quantity', 'user_id'],
     },
   })
   @ApiResponse({ status: 200, description: 'Product purchased successfully' })
   async buyProduct(
     @Param('id') productId: string,
     @Body('quantity') quantity: number,
-    @Body('userId') userId: number,
+    @Body('user_id') user_id: number, 
   ) {
     try {
+      if (!user_id) {
+        throw new BadRequestException('User ID is required');
+      }
+
       const product = await this.postService.buyProduct(
         +productId,
         quantity,
-        userId,
+        user_id,
       );
 
       if (!product) {
